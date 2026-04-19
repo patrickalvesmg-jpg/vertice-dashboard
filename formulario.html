@@ -510,8 +510,7 @@
     }).toString();
 
     try {
-      await fetch(SCRIPT_URL + '?' + qs, { mode: 'no-cors' });
-      const result = { status: 'ok' };
+      const result = await fetchJsonp(SCRIPT_URL + '?' + qs);
 
       if (result.status === 'ok') {
         const [y,m,d] = data.split('-');
