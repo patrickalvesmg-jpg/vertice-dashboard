@@ -848,8 +848,8 @@ async function atualizarDados() {
   const ate=document.getElementById('f-ate').value;
   try {
     const [r0,r1,r2,r3]=await Promise.all([
-      fetchAba(SHEET_ID,17505509),fetchAba(SHEET_ID,1912410320),
-      fetchAba(SHEET_ID,1546653935),fetchAba(SHEET_ID,1980013568)
+      fetchAba(SHEET_ID,724843330),fetchAba(SHEET_ID,130878610),
+      fetchAba(SHEET_ID,159673222),fetchAba(SHEET_ID,1858866447)
     ]);
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     renderDash(DATA.cfg,filtrar(DATA.ag,de,ate),filtrar(DATA.cli,de,ate),de,ate,DATA.dash);
@@ -868,13 +868,13 @@ async function carregarDados(de,ate) {
   document.getElementById('loader').classList.remove('hidden');
   try {
     setLoader(15,'CARREGANDO CONFIGURAÇÕES');
-    const r0=await fetchAba(SHEET_ID,17505509);
+    const r0=await fetchAba(SHEET_ID,724843330);
     setLoader(40,'CARREGANDO DADOS DA AGÊNCIA');
-    const r1=await fetchAba(SHEET_ID,1912410320);
+    const r1=await fetchAba(SHEET_ID,130878610);
     setLoader(65,'CARREGANDO DADOS DO CLIENTE');
-    const r2=await fetchAba(SHEET_ID,1546653935);
+    const r2=await fetchAba(SHEET_ID,159673222);
     setLoader(88,'CALCULANDO');
-    const r3=await fetchAba(SHEET_ID,1980013568);
+    const r3=await fetchAba(SHEET_ID,1858866447);
     setLoader(100,'PRONTO');
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     await new Promise(r=>setTimeout(r,280));
