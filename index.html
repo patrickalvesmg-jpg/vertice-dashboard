@@ -718,6 +718,16 @@
             <div class="pb-val" id="p-roi">—</div>
             <div class="pb-hint">Por R$ 1 investido</div>
           </div>
+          <div class="pb-item">
+            <div class="pb-lbl">Custo por Lead</div>
+            <div class="pb-val ye" id="p-cpl">—</div>
+            <div class="pb-hint">Investimento ÷ Interessados (Ads)</div>
+          </div>
+          <div class="pb-item">
+            <div class="pb-lbl">Custo por Venda</div>
+            <div class="pb-val ye" id="p-cpv">—</div>
+            <div class="pb-hint">Investimento ÷ Vendas (Ads)</div>
+          </div>
         </div>
       </div>
       <div class="lucro-status pos" id="lucro-status">
@@ -986,8 +996,8 @@ async function atualizarDados() {
   const ate=document.getElementById('f-ate').value;
   try {
     const [r0,r1,r2,r3]=await Promise.all([
-      fetchAba(SHEET_ID,724843330),fetchAba(SHEET_ID,130878610),
-      fetchAba(SHEET_ID,159673222),fetchAba(SHEET_ID,1858866447)
+      fetchAba(SHEET_ID,717206187),fetchAba(SHEET_ID,1373314288),
+      fetchAba(SHEET_ID,451862218),fetchAba(SHEET_ID,1230028827)
     ]);
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     renderDash(DATA.cfg,filtrar(DATA.ag,de,ate),filtrar(DATA.cli,de,ate),de,ate,DATA.dash);
@@ -1008,10 +1018,10 @@ async function carregarDados(de,ate,tentativa) {
   try {
     setLoader(20,'CARREGANDO DADOS');
     const [r0,r1,r2,r3]=await Promise.all([
-      fetchAba(SHEET_ID,724843330),
-      fetchAba(SHEET_ID,130878610),
-      fetchAba(SHEET_ID,159673222),
-      fetchAba(SHEET_ID,1858866447)
+      fetchAba(SHEET_ID,717206187),
+      fetchAba(SHEET_ID,1373314288),
+      fetchAba(SHEET_ID,451862218),
+      fetchAba(SHEET_ID,1230028827)
     ]);
     setLoader(100,'PRONTO');
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
@@ -1169,6 +1179,12 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   const roiPEl=document.getElementById('p-roi');
   roiPEl.textContent=roiP.toFixed(2).replace('.',',')+'x';
   roiPEl.className='pb-val '+(roiP>=1?'gr':'re');
+
+  // Custo por lead / venda (só ads, sem assessoria)
+  const cpl=totIntAds>0?custoAds/totIntAds:0;
+  const cpv=totVAds>0?custoAds/totVAds:0;
+  set('p-cpl',cpl>0?brl(cpl):'—');
+  set('p-cpv',cpv>0?brl(cpv):'—');
 
   // Status lucro
   const lsEl=document.getElementById('lucro-status');
