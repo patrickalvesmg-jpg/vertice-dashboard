@@ -316,7 +316,7 @@
       .hero-right{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
       .hero-stat{padding:12px 6px;min-width:0;border-radius:10px;}
       .hs-lbl{font-size:8px;letter-spacing:0.5px;margin-bottom:6px;}
-      .hs-val{font-size:18px;}
+      .hs-val{font-size:clamp(14px,4.5vw,18px);word-break:break-word;overflow-wrap:anywhere;}
       .hs-sub{font-size:8px;margin-top:4px;}
 
       /* Section labels */
@@ -327,11 +327,11 @@
       .pc{padding:18px 18px;border-radius:14px;}
       .pc-lbl{font-size:10px;}
       .pc-badge{font-size:9px;padding:2px 8px;}
-      .pc-val{font-size:26px;margin-bottom:10px;}
+      .pc-val{font-size:clamp(18px,5.5vw,26px);margin-bottom:10px;word-break:break-word;overflow-wrap:anywhere;}
       .pc-pct{font-size:16px;}
       .pc-rest{font-size:11px;}
       .roi-card{padding:18px 18px;border-radius:14px;}
-      .roi-val{font-size:36px;}
+      .roi-val{font-size:clamp(28px,8vw,36px);word-break:break-word;}
       .roi-lbl{font-size:9px;}
       .roi-desc{font-size:11px;margin-top:6px;}
 
@@ -340,7 +340,8 @@
       .pm-metrics{grid-template-columns:1fr 1fr;gap:8px;}
       .pm-row2 .card,.pm-metrics .card{padding:14px 14px;}
       .c-lbl{font-size:9px;margin-bottom:5px;line-height:1.4;}
-      .c-val.sm{font-size:17px;}
+      .c-val.sm{font-size:clamp(14px,4vw,17px);word-break:break-word;overflow-wrap:anywhere;}
+      .c-val{font-size:clamp(16px,5vw,24px);word-break:break-word;overflow-wrap:anywhere;}
       .c-sub{font-size:9px;margin-top:3px;line-height:1.4;}
 
       /* Período */
@@ -349,12 +350,12 @@
       .pb-title{font-size:9px;margin-bottom:12px;}
       .pb-grid{grid-template-columns:1fr 1fr;gap:12px;}
       .pb-lbl{font-size:9px;}
-      .pb-val{font-size:17px;}
+      .pb-val{font-size:clamp(13px,4vw,17px);word-break:break-word;overflow-wrap:anywhere;}
       .pb-hint{font-size:9px;}
       .lucro-status{padding:16px 16px;gap:12px;border-radius:14px;}
-      .ls-ico{font-size:30px;}
+      .ls-ico{font-size:28px;flex-shrink:0;}
       .ls-label{font-size:8px;}
-      .ls-val{font-size:22px;}
+      .ls-val{font-size:clamp(16px,5vw,22px);word-break:break-word;overflow-wrap:anywhere;}
       .ls-desc{font-size:11px;line-height:1.5;}
 
       /* Funil — scroll horizontal com snap */
@@ -364,24 +365,24 @@
       .fn:not(:last-child)::after{display:none;}
       .fn-ico{font-size:16px;margin-bottom:6px;}
       .fn-lbl{font-size:8px;margin-bottom:6px;}
-      .fn-num{font-size:22px;}
+      .fn-num{font-size:clamp(16px,5vw,22px);word-break:break-word;}
       .fn-sub{font-size:9px;margin-top:3px;}
       .fn-conv{font-size:10px;margin-top:3px;}
 
       /* Comparativo */
       .comp-grid{grid-template-columns:1fr;gap:10px;}
-      .comp-row{padding:9px 16px;}
-      .comp-key{font-size:12px;}
-      .comp-val{font-size:13px;}
+      .comp-row{padding:9px 16px;gap:8px;}
+      .comp-key{font-size:12px;flex:1;min-width:0;}
+      .comp-val{font-size:12px;flex-shrink:0;text-align:right;word-break:break-word;}
 
       /* Metas */
       .g2{grid-template-columns:1fr;gap:10px;}
       .meta-card{padding:16px 16px;border-radius:14px;}
       .m-nome{font-size:13px;}
       .m-periodo{font-size:9px;}
-      .m-real{font-size:15px;}
+      .m-real{font-size:clamp(13px,4vw,15px);word-break:break-word;}
       .m-meta{font-size:10px;}
-      .m-pct{font-size:20px;}
+      .m-pct{font-size:clamp(16px,5vw,20px);word-break:break-word;}
       .m-status{font-size:11px;}
 
       /* Gráficos */
@@ -394,7 +395,7 @@
       .eq-key{font-size:12px;}
       .eq-val{font-size:13px;}
       .eq-status{padding:20px 16px;border-radius:14px;}
-      .eq-big{font-size:22px;}
+      .eq-big{font-size:clamp(17px,5vw,22px);word-break:break-word;}
       .eq-desc{font-size:12px;max-width:100%;line-height:1.6;}
 
       /* Tabela */
@@ -862,19 +863,19 @@ function voltarSetup() {
   history.pushState({},'',location.pathname);
 }
 
-async function carregarDados(de,ate) {
+async function carregarDados(de,ate,tentativa) {
+  tentativa=tentativa||1;
   document.getElementById('setup').classList.remove('on');
   document.getElementById('dash').classList.remove('on');
   document.getElementById('loader').classList.remove('hidden');
   try {
-    setLoader(15,'CARREGANDO CONFIGURAÇÕES');
-    const r0=await fetchAba(SHEET_ID,724843330);
-    setLoader(40,'CARREGANDO DADOS DA AGÊNCIA');
-    const r1=await fetchAba(SHEET_ID,130878610);
-    setLoader(65,'CARREGANDO DADOS DO CLIENTE');
-    const r2=await fetchAba(SHEET_ID,159673222);
-    setLoader(88,'CALCULANDO');
-    const r3=await fetchAba(SHEET_ID,1858866447);
+    setLoader(20,'CARREGANDO DADOS');
+    const [r0,r1,r2,r3]=await Promise.all([
+      fetchAba(SHEET_ID,724843330),
+      fetchAba(SHEET_ID,130878610),
+      fetchAba(SHEET_ID,159673222),
+      fetchAba(SHEET_ID,1858866447)
+    ]);
     setLoader(100,'PRONTO');
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     await new Promise(r=>setTimeout(r,280));
@@ -884,10 +885,15 @@ async function carregarDados(de,ate) {
     document.getElementById('f-de').value=de;
     document.getElementById('f-ate').value=ate;
   } catch(e) {
+    if(tentativa<3){
+      setLoader(0,'TENTANDO NOVAMENTE...');
+      await new Promise(r=>setTimeout(r,1500));
+      return carregarDados(de,ate,tentativa+1);
+    }
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('setup').classList.add('on');
     const err=document.getElementById('s-err');
-    err.textContent='Não foi possível carregar a planilha. Verifique se está compartilhada como "Qualquer pessoa com o link".';
+    err.textContent='Não foi possível carregar a planilha. Verifique se está compartilhada como "Qualquer pessoa com o link pode visualizar".';
     err.style.display='block';
   }
 }
