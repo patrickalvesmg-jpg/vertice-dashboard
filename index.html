@@ -16,6 +16,7 @@
       --text:rgba(255,255,255,0.35); --text2:rgba(255,255,255,0.60);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{overflow-x:hidden;max-width:100%;}
     body{font-family:'Montserrat',sans-serif;background:var(--bg);color:#fff;min-height:100vh;}
 
     /* LOADER */
@@ -55,7 +56,8 @@
     /* HEADER */
     .hdr{background:rgba(11,9,32,0.92);border-bottom:1px solid var(--border);padding:14px 44px;
       display:flex;justify-content:space-between;align-items:center;
-      position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);}
+      position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);
+      width:100%;max-width:100%;}
     .hdr-left{display:flex;align-items:center;gap:16px;}
     .hdr-logo{font-size:13px;font-weight:900;letter-spacing:4px;color:var(--light);}
     .hdr-logo span{color:var(--lilac);}
@@ -296,12 +298,12 @@
       .hdr-logo{font-size:10px;letter-spacing:2px;}
       .hdr-client{font-size:13px;}
       .hdr-div{display:none;}
-      .hdr-right{width:100%;gap:6px;}
-      .hdr-filter{flex:1;gap:5px;padding:7px 10px;}
-      .hdr-filter label{font-size:8px;}
-      .hdr-filter input[type=date]{font-size:11px;width:96px;}
-      .hdr-btn.apply{padding:7px 10px;font-size:10px;}
-      .hdr-btn.refresh{padding:6px 8px;}
+      .hdr-right{width:100%;gap:6px;overflow:hidden;}
+      .hdr-filter{flex:1;gap:4px;padding:7px 8px;min-width:0;overflow:hidden;}
+      .hdr-filter label{font-size:8px;white-space:nowrap;}
+      .hdr-filter input[type=date]{font-size:11px;width:90px;min-width:0;}
+      .hdr-btn.apply{padding:7px 10px;font-size:10px;white-space:nowrap;}
+      .hdr-btn.refresh{padding:6px 8px;flex-shrink:0;}
       .hdr-btn.change{display:none;}
 
       /* Content */
