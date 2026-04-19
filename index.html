@@ -277,6 +277,100 @@
       .hero-right{flex-wrap:wrap;}
       .pb-grid{grid-template-columns:repeat(2,1fr);}
     }
+
+    /* ===== MOBILE ===== */
+    @media(max-width:640px){
+      /* Header */
+      .hdr{padding:12px 16px;gap:8px;}
+      .hdr-left{gap:10px;}
+      .hdr-logo{font-size:11px;letter-spacing:2px;}
+      .hdr-client{font-size:13px;}
+      .hdr-right{width:100%;justify-content:space-between;}
+      .hdr-filter{flex-wrap:wrap;gap:6px;padding:8px 10px;width:100%;}
+      .hdr-filter input[type=date]{font-size:11px;width:105px;}
+      .hdr-btn.apply{font-size:10px;padding:7px 12px;}
+      .hdr-btn.change{display:none;}
+
+      /* Content */
+      .cnt{padding:14px 14px 48px;}
+
+      /* Hero */
+      .hero{grid-template-columns:1fr;padding:22px 18px;gap:18px;border-radius:16px;}
+      .hero-eyebrow{font-size:9px;}
+      .hero-headline{font-size:14px;max-width:100%;}
+      .hero-right{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+      .hero-stat{padding:12px 8px;min-width:0;}
+      .hs-lbl{font-size:8px;letter-spacing:1px;}
+      .hs-val{font-size:20px;}
+      .hs-sub{font-size:9px;}
+
+      /* Section label */
+      .sec{font-size:9px;margin:24px 0 12px;}
+
+      /* Placar — 1 coluna no mobile para não cortar */
+      .placar-grid{grid-template-columns:1fr;gap:10px;}
+      .pc{padding:16px 18px;border-radius:14px;}
+      .pc-val{font-size:26px;margin-bottom:10px;}
+      .pc-pct{font-size:16px;}
+      .pc-rest{font-size:11px;}
+      .roi-card{padding:16px 18px;border-radius:14px;}
+      .roi-val{font-size:34px;}
+      .roi-desc{font-size:11px;}
+
+      /* Cards g4 — 1 coluna no mobile para legibilidade */
+      .g4{grid-template-columns:1fr;gap:10px;}
+      .g4 .card{padding:16px 18px;}
+      .c-val.sm{font-size:20px;}
+      .c-sub{font-size:11px;}
+      .g4>[style*="grid-column:3"]{grid-column:1;}
+
+      /* Período */
+      .g21{grid-template-columns:1fr;gap:10px;}
+      .periodo-bloco{padding:18px 16px;}
+      .pb-grid{grid-template-columns:1fr 1fr;gap:14px;}
+      .pb-val{font-size:17px;}
+      .lucro-status{padding:16px 18px;gap:14px;border-radius:14px;}
+      .ls-ico{font-size:28px;}
+      .ls-val{font-size:22px;}
+      .ls-desc{font-size:11px;}
+
+      /* Funil — scroll horizontal */
+      .funil{grid-template-columns:repeat(5,minmax(110px,1fr));overflow-x:auto;border-radius:14px;-webkit-overflow-scrolling:touch;}
+      .fn{padding:18px 10px;}
+      .fn-num{font-size:22px;}
+      .fn-lbl{font-size:8px;}
+
+      /* Comparativo */
+      .comp-grid{grid-template-columns:1fr;}
+      .comp-row{padding:9px 14px;}
+      .comp-key{font-size:11px;}
+      .comp-val{font-size:12px;}
+
+      /* Metas */
+      .g2{grid-template-columns:1fr;}
+      .meta-card{padding:16px 16px;}
+      .m-nome{font-size:12px;}
+      .m-real{font-size:14px;}
+      .m-pct{font-size:18px;}
+
+      /* Gráficos */
+      .cc{padding:16px 14px;}
+      .cc-title{font-size:12px;}
+
+      /* Equilíbrio */
+      .eq-card{padding:16px 18px;}
+      .eq-key{font-size:11px;}
+      .eq-val{font-size:13px;}
+      .eq-status{padding:20px 16px;}
+      .eq-big{font-size:22px;}
+      .eq-desc{font-size:11px;max-width:100%;}
+
+      /* Tabela — scroll horizontal */
+      .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;}
+      table{min-width:700px;}
+      thead th{padding:10px 10px;font-size:8px;}
+      tbody td{padding:9px 10px;font-size:11px;}
+    }
   </style>
 </head>
 <body>
