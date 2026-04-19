@@ -395,7 +395,7 @@
         <div class="roi-desc" id="pm-roi-desc">—</div>
       </div>
     </div>
-    <div class="g4">
+    <div class="g4" style="margin-bottom:8px">
       <div class="card">
         <div class="c-lbl">Investimento Total</div>
         <div class="c-val sm pu" id="pm-inv">—</div>
@@ -406,15 +406,27 @@
         <div class="c-val sm gr" id="pm-lucro">—</div>
         <div class="c-sub">Faturamento anúncios − Investimento</div>
       </div>
-      <div class="card">
-        <div class="c-lbl">Ticket Médio Real</div>
-        <div class="c-val sm ye" id="pm-ticket">—</div>
-        <div class="c-sub">Faturamento anúncios ÷ Vendas do mês</div>
+      <div class="card" style="border-top:2px solid rgba(168,85,247,0.30)">
+        <div class="c-lbl" style="color:var(--lilac)">📢 Ticket Médio — Anúncios</div>
+        <div class="c-val sm ye" id="pm-ticket-ads">—</div>
+        <div class="c-sub">Faturamento ads ÷ Vendas via ads</div>
+      </div>
+      <div class="card" style="border-top:2px solid rgba(168,85,247,0.30)">
+        <div class="c-lbl" style="color:var(--lilac)">📢 Conversão — Anúncios</div>
+        <div class="c-val sm bl" id="pm-conv-ads">—</div>
+        <div class="c-sub">Interessados ads → Vendas ads</div>
+      </div>
+    </div>
+    <div class="g4">
+      <div class="card" style="grid-column:3">
+        <div class="c-lbl" style="color:rgba(56,189,248,0.60)">🏪 Ticket Médio — Operação Total</div>
+        <div class="c-val sm ye" id="pm-ticket-tot">—</div>
+        <div class="c-sub">Faturamento total ÷ Todas as vendas</div>
       </div>
       <div class="card">
-        <div class="c-lbl">Taxa de Conversão Real</div>
-        <div class="c-val sm bl" id="pm-conv">—</div>
-        <div class="c-sub">Interessados → Vendas do mês</div>
+        <div class="c-lbl" style="color:rgba(56,189,248,0.60)">🏪 Conversão — Operação Total</div>
+        <div class="c-val sm bl" id="pm-conv-tot">—</div>
+        <div class="c-sub">Todos os interessados → Todas as vendas</div>
       </div>
     </div>
 
@@ -815,16 +827,25 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   document.getElementById('pm-lucro').className='c-val sm '+(pmLucro>=0?'gr':'re');
   set('pm-lucro',brl(pmLucro));
   // Ticket e conversão reais do mês completo (DATA.cli = sem filtro de período)
-  let pmVAdsTotal=0,pmFAdsTotal=0,pmIntAdsTotal=0;
+  let pmVAdsM=0,pmFAdsM=0,pmIntAdsM=0,pmVOrgM=0,pmFOrgM=0,pmIntOrgM=0,pmVTotM=0,pmFTotM=0;
   (DATA.cli||[]).forEach(r=>{
-    pmVAdsTotal+=num(r['Vendas por Anúncios (Qtd)']||0);
-    pmFAdsTotal+=num(r['Valor Vendido Anúncios (R$)']||0);
-    pmIntAdsTotal+=num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+    pmVAdsM+=num(r['Vendas por Anúncios (Qtd)']||0);
+    pmFAdsM+=num(r['Valor Vendido Anúncios (R$)']||0);
+    pmIntAdsM+=num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+    pmVOrgM+=num(r['Vendas Orgânicas (Qtd)']||0);
+    pmFOrgM+=num(r['Valor Vendido Orgânico (R$)']||0);
+    pmIntOrgM+=num(r['Interessados ORGÂNICOS (Sem Anúncio)']||0);
+    pmVTotM+=num(r['TOTAL DE VENDAS (DIA)']||0);
+    pmFTotM+=num(r['TOTAL FATURADO (DIA)']||0);
   });
-  const ticketReal=pmVAdsTotal>0?pmFAdsTotal/pmVAdsTotal:0;
-  const convReal=pmIntAdsTotal>0?pmVAdsTotal/pmIntAdsTotal*100:0;
-  set('pm-ticket',brl(ticketReal));
-  set('pm-conv',convReal.toFixed(1)+'%');
+  const ticketAds=pmVAdsM>0?pmFAdsM/pmVAdsM:0;
+  const convAds=pmIntAdsM>0?pmVAdsM/pmIntAdsM*100:0;
+  const ticketTot=pmVTotM>0?pmFTotM/pmVTotM:0;
+  const convTot=(pmIntAdsM+pmIntOrgM)>0?pmVTotM/(pmIntAdsM+pmIntOrgM)*100:0;
+  set('pm-ticket-ads',brl(ticketAds));
+  set('pm-conv-ads',convAds.toFixed(1)+'%');
+  set('pm-ticket-tot',brl(ticketTot));
+  set('pm-conv-tot',convTot.toFixed(1)+'%');
 
   // Período
   const dDe=de?new Date(de):(ag.length?parseDate(ag[0]['Data']||ag[0]['data']):null);
