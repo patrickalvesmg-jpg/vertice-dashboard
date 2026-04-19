@@ -222,6 +222,40 @@
     .fn-sub{font-size:10px;font-weight:600;color:rgba(196,181,253,.40);margin-top:4px;}
     .fn-conv{font-size:11px;font-weight:700;color:var(--lilac);margin-top:3px;}
 
+    /* PROJEÇÃO DO MÊS */
+    .proj-card{background:linear-gradient(135deg,rgba(250,204,21,0.06),rgba(250,204,21,0.02));
+      border:1px solid rgba(250,204,21,0.18);border-radius:16px;padding:24px 28px;margin-bottom:12px;}
+    .proj-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+    .proj-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(250,204,21,0.55);}
+    .proj-subtitle{font-size:12px;font-weight:600;color:var(--text);margin-top:3px;line-height:1.5;}
+    .proj-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(250,204,21,0.10);color:var(--yellow);white-space:nowrap;}
+    .proj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+    .proj-item{}
+    .proj-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text);margin-bottom:5px;}
+    .proj-val{font-size:20px;font-weight:900;}
+    .proj-val.ye{color:var(--yellow);}
+    .proj-val.gr{color:var(--green);}
+    .proj-val.pu{color:var(--light);}
+    .proj-hint{font-size:10px;font-weight:600;color:var(--text);margin-top:3px;}
+    .proj-bar-wrap{margin-top:18px;}
+    .proj-bar-label{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--text);margin-bottom:6px;}
+    .proj-bar-bg{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+    .proj-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ca8a04,#facc15);transition:width .8s ease;}
+    .proj-bar-fill.ok{background:linear-gradient(90deg,#16a34a,#4ade80);}
+
+    /* MELHOR DIA DA SEMANA */
+    .dias-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:12px;}
+    .dia-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;position:relative;}
+    .dia-card.best{background:rgba(250,204,21,0.07);border-color:rgba(250,204,21,0.25);}
+    .dia-nome{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);margin-bottom:8px;}
+    .dia-nome.best{color:rgba(250,204,21,0.70);}
+    .dia-fat{font-size:14px;font-weight:900;line-height:1.1;}
+    .dia-sub{font-size:9px;font-weight:600;color:var(--text);margin-top:4px;}
+    .dia-bar{height:3px;border-radius:2px;background:rgba(168,85,247,0.20);margin-top:8px;overflow:hidden;}
+    .dia-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--lilac));}
+    .dia-card.best .dia-bar-fill{background:linear-gradient(90deg,#ca8a04,#facc15);}
+    .dia-crown{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:14px;}
+
     /* COMPARATIVO */
     .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     .comp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
@@ -369,6 +403,12 @@
       .c-val.sm{font-size:clamp(14px,4vw,17px);word-break:break-word;overflow-wrap:anywhere;}
       .c-val{font-size:clamp(16px,5vw,24px);word-break:break-word;overflow-wrap:anywhere;}
       .c-sub{font-size:9px;margin-top:3px;line-height:1.4;}
+
+      /* Projeção */
+      .proj-grid{grid-template-columns:1fr 1fr;gap:12px;}
+      .proj-val{font-size:clamp(15px,4.5vw,20px);word-break:break-word;}
+      /* Dias da semana */
+      .dias-grid{grid-template-columns:repeat(4,1fr);gap:6px;}
 
       /* Período */
       .g21{grid-template-columns:1fr;gap:10px;}
@@ -611,6 +651,47 @@
       </div>
     </div>
 
+    <!-- ① PROJEÇÃO DO MÊS -->
+    <div class="sec">Projeção do Mês <span class="sec-hint" id="sec-proj-hint"></span></div>
+    <div class="proj-card">
+      <div class="proj-head">
+        <div>
+          <div class="proj-title">Se o ritmo atual continuar...</div>
+          <div class="proj-subtitle" id="proj-subtitle">Baseado nos <span id="proj-dias-passados">—</span> dias com dados até agora</div>
+        </div>
+        <div class="proj-badge" id="proj-badge">—</div>
+      </div>
+      <div class="proj-grid">
+        <div class="proj-item">
+          <div class="proj-lbl">Faturamento Anúncios</div>
+          <div class="proj-val ye" id="proj-fat-ads">—</div>
+          <div class="proj-hint" id="proj-fat-ads-hint">—</div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-lbl">Faturamento Total</div>
+          <div class="proj-val pu" id="proj-fat-tot">—</div>
+          <div class="proj-hint" id="proj-fat-tot-hint">—</div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-lbl">Contatos Gerados</div>
+          <div class="proj-val" id="proj-contatos">—</div>
+          <div class="proj-hint">no mês completo</div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-lbl">Vendas por Anúncios</div>
+          <div class="proj-val" id="proj-vendas">—</div>
+          <div class="proj-hint">no mês completo</div>
+        </div>
+      </div>
+      <div class="proj-bar-wrap">
+        <div class="proj-bar-label">
+          <span>Meta de faturamento via anúncios</span>
+          <span id="proj-meta-pct">—</span>
+        </div>
+        <div class="proj-bar-bg"><div class="proj-bar-fill" id="proj-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+
     <!-- ② PERÍODO SELECIONADO -->
     <div class="sec">Como foi no período selecionado <span class="sec-hint" id="sec-periodo-label"></span></div>
     <div class="g21" style="margin-bottom:12px">
@@ -721,7 +802,11 @@
     <div class="sec">Progresso das Metas <span class="sec-hint" id="sec-metas-hint"></span></div>
     <div class="g2" id="metas-grid"></div>
 
-    <!-- ⑥ GRÁFICOS — só os 2 mais relevantes + acumulado -->
+    <!-- ⑥ MELHOR DIA DA SEMANA -->
+    <div class="sec">Desempenho por Dia da Semana</div>
+    <div class="dias-grid" id="dias-semana-grid"></div>
+
+    <!-- ⑦ GRÁFICOS — só os 2 mais relevantes + acumulado -->
     <div class="sec">Evolução no Período</div>
     <div class="g2">
       <div class="cc">
@@ -1181,6 +1266,93 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   set('eq-desc',saldo>=0
     ?'O projeto se pagou e gerou '+brl(saldo)+' de retorno líquido.'
     :'Faltam '+brl(Math.abs(saldo))+' em faturamento de anúncios para o projeto se pagar.');
+
+  // ── PROJEÇÃO DO MÊS ────────────────────────────────────────────────
+  const hoje = new Date();
+  const anoMes = de ? de.slice(0,7) : `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
+  const [anoP, mesP] = anoMes.split('-').map(Number);
+  const diasNoMes = new Date(anoP, mesP, 0).getDate();
+  // Usa DATA.cli completo para pegar apenas dias com dados
+  const cliComDados = (DATA.cli||[]).filter(r => {
+    const d = parseDate(r['Data']||r['data']||'');
+    if (!d) return false;
+    return d.getFullYear()===anoP && d.getMonth()+1===mesP;
+  });
+  const diasComDados = cliComDados.filter(r => {
+    const v = num(r['TOTAL FATURADO (DIA)']||0) + num(r['Valor Vendido Anúncios (R$)']||0);
+    return v > 0;
+  }).length || Math.max(cliComDados.length, 1);
+
+  let projFAds=0, projFTot=0, projIntAds=0, projVAds=0;
+  cliComDados.forEach(r => {
+    projFAds   += num(r['Valor Vendido Anúncios (R$)']||0);
+    projFTot   += num(r['TOTAL FATURADO (DIA)']||0);
+    projIntAds += num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+    projVAds   += num(r['Vendas por Anúncios (Qtd)']||0);
+  });
+  const ritmoFAds  = diasComDados > 0 ? projFAds  / diasComDados : 0;
+  const ritmoFTot  = diasComDados > 0 ? projFTot  / diasComDados : 0;
+  const ritmoInt   = diasComDados > 0 ? projIntAds / diasComDados : 0;
+  const ritmoVAds  = diasComDados > 0 ? projVAds  / diasComDados : 0;
+  const projMesFAds  = ritmoFAds  * diasNoMes;
+  const projMesFTot  = ritmoFTot  * diasNoMes;
+  const projMesInt   = Math.round(ritmoInt  * diasNoMes);
+  const projMesVAds  = Math.round(ritmoVAds * diasNoMes);
+  const metaFatAnMes = metaFatAn; // meta já é mensal na configuração
+  const projPctMeta  = metaFatAnMes > 0 ? projMesFAds / metaFatAnMes * 100 : 0;
+  const projOkMeta   = projPctMeta >= 100;
+
+  set('proj-dias-passados', diasComDados + ' dias');
+  set('sec-proj-hint', 'mês de ' + new Date(anoP, mesP-1, 1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}));
+  set('proj-fat-ads', brl(projMesFAds));
+  set('proj-fat-ads-hint', 'ritmo: ' + brl(ritmoFAds) + '/dia');
+  set('proj-fat-tot', brl(projMesFTot));
+  set('proj-fat-tot-hint', 'ritmo: ' + brl(ritmoFTot) + '/dia');
+  set('proj-contatos', projMesInt.toLocaleString('pt-BR'));
+  set('proj-vendas', projMesVAds.toLocaleString('pt-BR'));
+  set('proj-meta-pct', projPctMeta.toFixed(1) + '% da meta');
+  const projBar = document.getElementById('proj-bar');
+  projBar.style.width = Math.min(projPctMeta, 100) + '%';
+  projBar.className = 'proj-bar-fill' + (projOkMeta ? ' ok' : '');
+  const projBadgeEl = document.getElementById('proj-badge');
+  if (metaFatAnMes > 0) {
+    if (projOkMeta) { projBadgeEl.textContent = '✅ Meta projetada'; projBadgeEl.style.background='rgba(74,222,128,0.10)'; projBadgeEl.style.color='#4ade80'; }
+    else { const falta = metaFatAnMes - projMesFAds; projBadgeEl.textContent = 'Faltam ' + brl(falta) + ' p/ meta'; projBadgeEl.style.background='rgba(250,204,21,0.10)'; projBadgeEl.style.color='#facc15'; }
+  } else { projBadgeEl.textContent = diasNoMes + ' dias no mês'; }
+
+  // ── MELHOR DIA DA SEMANA ────────────────────────────────────────────
+  const nomeDias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const diasStats = Array.from({length:7}, () => ({fat:0,int:0,vend:0,count:0}));
+  (DATA.cli||[]).forEach(r => {
+    const d = parseDate(r['Data']||r['data']||'');
+    if (!d) return;
+    const dw = d.getDay();
+    diasStats[dw].fat   += num(r['TOTAL FATURADO (DIA)']||0);
+    diasStats[dw].int   += num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+    diasStats[dw].vend  += num(r['Vendas por Anúncios (Qtd)']||0);
+    diasStats[dw].count += 1;
+  });
+  const maxFat = Math.max(...diasStats.map(d => d.count > 0 ? d.fat / d.count : 0), 1);
+  const bestIdx = diasStats.reduce((best, d, i) => {
+    const avg = d.count > 0 ? d.fat / d.count : 0;
+    return avg > (diasStats[best].count > 0 ? diasStats[best].fat / diasStats[best].count : 0) ? i : best;
+  }, 0);
+  // Reordenar: Seg(1) a Dom(0)
+  const ordem = [1,2,3,4,5,6,0];
+  document.getElementById('dias-semana-grid').innerHTML = ordem.map(i => {
+    const d = diasStats[i];
+    const avg = d.count > 0 ? d.fat / d.count : 0;
+    const avgInt = d.count > 0 ? Math.round(d.int / d.count) : 0;
+    const pct = maxFat > 0 ? avg / maxFat * 100 : 0;
+    const isBest = i === bestIdx && d.count > 0;
+    return `<div class="dia-card${isBest?' best':''}">
+      ${isBest?'<div class="dia-crown">👑</div>':''}
+      <div class="dia-nome${isBest?' best':''}">${nomeDias[i]}</div>
+      <div class="dia-fat" style="color:${isBest?'#facc15':'#C4B5FD'}">${d.count>0?brl(avg):'—'}</div>
+      <div class="dia-sub">${d.count>0?avgInt+' contatos/dia':'sem dados'}</div>
+      <div class="dia-bar"><div class="dia-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
 
   // Tabela semanal
   const semanas={};
