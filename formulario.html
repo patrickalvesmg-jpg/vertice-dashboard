@@ -351,10 +351,8 @@
 
   // ── REGISTROS RECENTES ──────────────────────────────────────
   async function fetchScript(url) {
-    const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-    const res = await fetch(proxy);
-    const data = await res.json();
-    return JSON.parse(data.contents);
+    const res = await fetch(url, { redirect: 'follow' });
+    return await res.json();
   }
 
   async function carregarRecentes() {
