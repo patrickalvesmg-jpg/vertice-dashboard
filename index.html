@@ -268,6 +268,16 @@
 
     .footer{text-align:center;padding:24px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.06);border-top:1px solid var(--border);margin-top:40px;}
 
+    /* PLACAR — linhas extras: investimento+lucro ficam nas cols 1-2, métricas nas cols 1-4 */
+    .pm-row2{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+    .pm-row2 .card:first-child{grid-column:1;}
+    .pm-row2 .card:last-child{grid-column:2;}
+    .pm-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:0;}
+    .pm-ads-card{border-top:2px solid rgba(168,85,247,0.35);}
+    .pm-tot-card{border-top:2px solid rgba(56,189,248,0.35);}
+    .pm-ads-lbl{color:rgba(168,85,247,0.70)!important;}
+    .pm-tot-lbl{color:rgba(56,189,248,0.60)!important;}
+
     @media(max-width:1100px){
       .placar-grid,.g4,.g3{grid-template-columns:repeat(2,1fr);}
       .funil{grid-template-columns:repeat(3,1fr);}
@@ -280,16 +290,16 @@
 
     /* ===== MOBILE ===== */
     @media(max-width:640px){
-      /* Header — compacto, 2 linhas */
-      .hdr{padding:10px 16px;gap:6px;flex-direction:column;align-items:stretch;}
-      .hdr-left{gap:10px;}
+      /* Header */
+      .hdr{padding:10px 14px;gap:6px;flex-direction:column;align-items:stretch;}
+      .hdr-left{gap:8px;}
       .hdr-logo{font-size:10px;letter-spacing:2px;}
-      .hdr-client{font-size:14px;font-weight:800;}
+      .hdr-client{font-size:13px;}
       .hdr-div{display:none;}
       .hdr-right{width:100%;gap:6px;}
       .hdr-filter{flex:1;gap:5px;padding:7px 10px;}
       .hdr-filter label{font-size:8px;}
-      .hdr-filter input[type=date]{font-size:11px;width:98px;}
+      .hdr-filter input[type=date]{font-size:11px;width:96px;}
       .hdr-btn.apply{padding:7px 10px;font-size:10px;}
       .hdr-btn.refresh{padding:6px 8px;}
       .hdr-btn.change{display:none;}
@@ -297,17 +307,10 @@
       /* Content */
       .cnt{padding:12px 12px 56px;}
 
-      /* Hero — narrativa em destaque */
-      .hero{
-        grid-template-columns:1fr;
-        padding:20px 18px;
-        gap:16px;
-        border-radius:18px;
-        margin-bottom:20px;
-      }
-      .hero-eyebrow{font-size:9px;margin-bottom:8px;}
-      .hero-headline{font-size:15px;line-height:1.65;max-width:100%;}
-      /* 3 stats em linha horizontal */
+      /* Hero */
+      .hero{grid-template-columns:1fr;padding:20px 16px;gap:16px;border-radius:16px;margin-bottom:20px;}
+      .hero-eyebrow{font-size:9px;margin-bottom:6px;}
+      .hero-headline{font-size:14px;line-height:1.65;max-width:100%;}
       .hero-right{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
       .hero-stat{padding:12px 6px;min-width:0;border-radius:10px;}
       .hs-lbl{font-size:8px;letter-spacing:0.5px;margin-bottom:6px;}
@@ -317,105 +320,85 @@
       /* Section labels */
       .sec{font-size:8px;letter-spacing:2px;margin:22px 0 10px;}
 
-      /* Placar — 1 coluna full-width */
+      /* Placar — 1 coluna full-width, cards respirando */
       .placar-grid{grid-template-columns:1fr;gap:10px;}
-      .pc{
-        padding:18px 20px;
-        border-radius:16px;
-        /* linha de destaque lateral */
-        border-left:3px solid rgba(168,85,247,0.5);
-      }
-      .pc-top{margin-bottom:8px;}
-      .pc-lbl{font-size:9px;}
+      .pc{padding:18px 18px;border-radius:14px;}
+      .pc-lbl{font-size:10px;}
       .pc-badge{font-size:9px;padding:2px 8px;}
-      .pc-val{font-size:28px;margin-bottom:10px;}
-      .pc-pct{font-size:17px;}
+      .pc-val{font-size:26px;margin-bottom:10px;}
+      .pc-pct{font-size:16px;}
       .pc-rest{font-size:11px;}
-      /* ROI card — destaque especial */
-      .roi-card{padding:18px 20px;border-radius:16px;}
-      .roi-val{font-size:38px;}
-      .roi-lbl{font-size:8px;}
+      .roi-card{padding:18px 18px;border-radius:14px;}
+      .roi-val{font-size:36px;}
+      .roi-lbl{font-size:9px;}
       .roi-desc{font-size:11px;margin-top:6px;}
 
-      /* g4 — 2 colunas compactas */
-      .g4{grid-template-columns:1fr 1fr;gap:8px;}
-      .g4 .card{padding:14px 14px;border-radius:14px;}
-      .c-lbl{font-size:8px;margin-bottom:6px;}
-      .c-val.sm{font-size:18px;}
-      .c-sub{font-size:9px;margin-top:4px;}
-      .g4>[style*="grid-column:3"]{grid-column:auto;}
+      /* Placar linhas extras — 2 colunas limpas */
+      .pm-row2{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+      .pm-metrics{grid-template-columns:1fr 1fr;gap:8px;}
+      .pm-row2 .card,.pm-metrics .card{padding:14px 14px;}
+      .c-lbl{font-size:9px;margin-bottom:5px;line-height:1.4;}
+      .c-val.sm{font-size:17px;}
+      .c-sub{font-size:9px;margin-top:3px;line-height:1.4;}
 
-      /* Período selecionado */
+      /* Período */
       .g21{grid-template-columns:1fr;gap:10px;}
-      .periodo-bloco{padding:16px 16px;border-radius:16px;}
+      .periodo-bloco{padding:16px 16px;border-radius:14px;}
       .pb-title{font-size:9px;margin-bottom:12px;}
       .pb-grid{grid-template-columns:1fr 1fr;gap:12px;}
       .pb-lbl{font-size:9px;}
-      .pb-val{font-size:18px;}
+      .pb-val{font-size:17px;}
       .pb-hint{font-size:9px;}
-      /* Lucro status — horizontal compacto */
-      .lucro-status{padding:16px 18px;gap:12px;border-radius:16px;}
-      .ls-ico{font-size:32px;flex-shrink:0;}
+      .lucro-status{padding:16px 16px;gap:12px;border-radius:14px;}
+      .ls-ico{font-size:30px;}
       .ls-label{font-size:8px;}
-      .ls-val{font-size:24px;}
+      .ls-val{font-size:22px;}
       .ls-desc{font-size:11px;line-height:1.5;}
 
-      /* Funil — scroll horizontal suave */
-      .funil{
-        display:flex;
-        overflow-x:auto;
-        -webkit-overflow-scrolling:touch;
-        border-radius:16px;
-        scroll-snap-type:x mandatory;
-        gap:0;
-      }
-      .fn{
-        flex:0 0 130px;
-        scroll-snap-align:start;
-        padding:20px 12px;
-      }
+      /* Funil — scroll horizontal com snap */
+      .funil{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;
+        border-radius:14px;scroll-snap-type:x mandatory;}
+      .fn{flex:0 0 120px;scroll-snap-align:start;padding:18px 10px;}
       .fn:not(:last-child)::after{display:none;}
-      .fn-ico{font-size:18px;margin-bottom:8px;}
+      .fn-ico{font-size:16px;margin-bottom:6px;}
       .fn-lbl{font-size:8px;margin-bottom:6px;}
-      .fn-num{font-size:24px;}
-      .fn-sub{font-size:9px;margin-top:4px;}
-      .fn-conv{font-size:11px;margin-top:4px;}
+      .fn-num{font-size:22px;}
+      .fn-sub{font-size:9px;margin-top:3px;}
+      .fn-conv{font-size:10px;margin-top:3px;}
 
-      /* Comparativo — 1 coluna */
+      /* Comparativo */
       .comp-grid{grid-template-columns:1fr;gap:10px;}
-      .comp-head{padding:12px 16px;}
-      .comp-title{font-size:13px;}
       .comp-row{padding:9px 16px;}
       .comp-key{font-size:12px;}
       .comp-val{font-size:13px;}
 
-      /* Metas — 1 coluna */
+      /* Metas */
       .g2{grid-template-columns:1fr;gap:10px;}
-      .meta-card{padding:16px 18px;border-radius:14px;}
+      .meta-card{padding:16px 16px;border-radius:14px;}
       .m-nome{font-size:13px;}
       .m-periodo{font-size:9px;}
-      .m-real{font-size:16px;}
-      .m-meta{font-size:11px;}
-      .m-pct{font-size:22px;}
+      .m-real{font-size:15px;}
+      .m-meta{font-size:10px;}
+      .m-pct{font-size:20px;}
       .m-status{font-size:11px;}
 
       /* Gráficos */
-      .cc{padding:16px 14px;border-radius:14px;}
-      .cc-title{font-size:13px;}
+      .cc{padding:14px 12px;border-radius:14px;}
+      .cc-title{font-size:12px;}
       .cc-sub{font-size:10px;}
 
       /* Equilíbrio */
-      .eq-card{padding:16px 18px;border-radius:14px;}
+      .eq-card{padding:16px 16px;border-radius:14px;}
       .eq-key{font-size:12px;}
-      .eq-val{font-size:14px;}
-      .eq-status{padding:22px 18px;border-radius:14px;}
-      .eq-big{font-size:24px;}
+      .eq-val{font-size:13px;}
+      .eq-status{padding:20px 16px;border-radius:14px;}
+      .eq-big{font-size:22px;}
       .eq-desc{font-size:12px;max-width:100%;line-height:1.6;}
 
-      /* Tabela — scroll horizontal */
+      /* Tabela */
       .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;}
       table{min-width:680px;}
-      thead th{padding:10px 10px;font-size:8px;letter-spacing:1px;}
+      thead th{padding:9px 10px;font-size:8px;letter-spacing:1px;}
       tbody td{padding:9px 10px;font-size:11px;}
     }
   </style>
@@ -536,7 +519,8 @@
         <div class="roi-desc" id="pm-roi-desc">—</div>
       </div>
     </div>
-    <div class="g4" style="margin-bottom:8px">
+    <!-- linha 1: investimento + lucro -->
+    <div class="pm-row2">
       <div class="card">
         <div class="c-lbl">Investimento Total</div>
         <div class="c-val sm pu" id="pm-inv">—</div>
@@ -547,27 +531,28 @@
         <div class="c-val sm gr" id="pm-lucro">—</div>
         <div class="c-sub">Faturamento anúncios − Investimento</div>
       </div>
-      <div class="card" style="border-top:2px solid rgba(168,85,247,0.30)">
-        <div class="c-lbl" style="color:var(--lilac)">📢 Ticket Médio — Anúncios</div>
-        <div class="c-val sm ye" id="pm-ticket-ads">—</div>
-        <div class="c-sub">Faturamento ads ÷ Vendas via ads</div>
-      </div>
-      <div class="card" style="border-top:2px solid rgba(168,85,247,0.30)">
-        <div class="c-lbl" style="color:var(--lilac)">📢 Conversão — Anúncios</div>
-        <div class="c-val sm bl" id="pm-conv-ads">—</div>
-        <div class="c-sub">Interessados ads → Vendas ads</div>
-      </div>
     </div>
-    <div class="g4">
-      <div class="card" style="grid-column:3">
-        <div class="c-lbl" style="color:rgba(56,189,248,0.60)">🏪 Ticket Médio — Operação Total</div>
-        <div class="c-val sm ye" id="pm-ticket-tot">—</div>
-        <div class="c-sub">Faturamento total ÷ Todas as vendas</div>
+    <!-- linha 2: métricas ads vs total — 4 colunas iguais -->
+    <div class="pm-metrics">
+      <div class="card pm-ads-card">
+        <div class="c-lbl pm-ads-lbl">Ticket Médio</div>
+        <div class="c-val sm ye" id="pm-ticket-ads">—</div>
+        <div class="c-sub">📢 Anúncios</div>
       </div>
-      <div class="card">
-        <div class="c-lbl" style="color:rgba(56,189,248,0.60)">🏪 Conversão — Operação Total</div>
+      <div class="card pm-ads-card">
+        <div class="c-lbl pm-ads-lbl">Conversão</div>
+        <div class="c-val sm bl" id="pm-conv-ads">—</div>
+        <div class="c-sub">📢 Interessados → Vendas ads</div>
+      </div>
+      <div class="card pm-tot-card">
+        <div class="c-lbl pm-tot-lbl">Ticket Médio</div>
+        <div class="c-val sm ye" id="pm-ticket-tot">—</div>
+        <div class="c-sub">🏪 Operação total</div>
+      </div>
+      <div class="card pm-tot-card">
+        <div class="c-lbl pm-tot-lbl">Conversão</div>
         <div class="c-val sm bl" id="pm-conv-tot">—</div>
-        <div class="c-sub">Todos os interessados → Todas as vendas</div>
+        <div class="c-sub">🏪 Todos os canais</div>
       </div>
     </div>
 
