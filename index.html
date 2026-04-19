@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>Dashboard de Resultados — Vértice Assessoria</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -80,7 +78,31 @@
     .hdr-btn.refresh.girando{animation:girar .7s linear infinite;}
     .hdr-btn.change{background:transparent;color:rgba(255,255,255,0.20);font-size:10px;border:1px solid rgba(255,255,255,0.07);}
     .hdr-btn.change:hover{color:var(--lilac);border-color:var(--border2);}
+    .hdr-btn.export{background:rgba(74,222,128,0.08);color:rgba(74,222,128,0.80);border:1px solid rgba(74,222,128,0.20);font-size:10px;}
+    .hdr-btn.export:hover{background:rgba(74,222,128,0.15);color:var(--green);}
     @keyframes girar{to{transform:rotate(360deg);}}
+
+    /* MODAL EXPORTAR */
+    #modal-export{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);}
+    #modal-export.on{display:flex;}
+    .exp-box{background:#110D30;border:1px solid rgba(168,85,247,0.25);border-radius:20px;width:100%;max-width:520px;padding:32px 36px;}
+    .exp-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+    .exp-sub{font-size:12px;color:var(--text);margin-bottom:24px;line-height:1.6;}
+    .exp-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+    .exp-field{display:flex;flex-direction:column;gap:6px;}
+    .exp-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(168,85,247,0.55);}
+    .exp-input{padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(168,85,247,0.18);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;color:#fff;outline:none;}
+    .exp-input:focus{border-color:rgba(168,85,247,0.50);}
+    .exp-btns{display:flex;gap:10px;margin-top:20px;}
+    .exp-btn{flex:1;padding:12px;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity .2s;}
+    .exp-btn.go{background:linear-gradient(135deg,var(--purple),var(--lilac));color:#fff;}
+    .exp-btn.go:hover{opacity:.85;}
+    .exp-btn.go:disabled{opacity:.4;cursor:not-allowed;}
+    .exp-btn.cancel{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.40);border:1px solid rgba(255,255,255,0.08);}
+    .exp-btn.cancel:hover{color:#fff;}
+
+    /* CARD GERADO (fora da tela para captura) */
+    #exp-card-wrap{position:fixed;left:-9999px;top:0;}
 
     /* CONTENT */
     .cnt{max-width:1400px;margin:0 auto;padding:36px 44px 60px;}
@@ -308,6 +330,7 @@
       .hdr-btn.apply{padding:7px 10px;font-size:10px;white-space:nowrap;}
       .hdr-btn.refresh{padding:6px 8px;flex-shrink:0;}
       .hdr-btn.change{display:none;}
+      .hdr-btn.export{display:none;}
 
       /* Content */
       .cnt{padding:12px 12px 56px;}
@@ -442,6 +465,31 @@
   </div>
 </div>
 
+<!-- MODAL EXPORTAR -->
+<div id="modal-export">
+  <div class="exp-box">
+    <div class="exp-title">Exportar Relatório</div>
+    <div class="exp-sub">Gera uma imagem do resumo do período para enviar no grupo do cliente.</div>
+    <div class="exp-row">
+      <div class="exp-field">
+        <label class="exp-label">Período — início</label>
+        <input class="exp-input" type="date" id="exp-de" />
+      </div>
+      <div class="exp-field">
+        <label class="exp-label">Período — fim</label>
+        <input class="exp-input" type="date" id="exp-ate" />
+      </div>
+    </div>
+    <div class="exp-btns">
+      <button class="exp-btn cancel" onclick="fecharExport()">Cancelar</button>
+      <button class="exp-btn go" id="btn-gerar" onclick="gerarImagem()">Gerar imagem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CARD PARA CAPTURA -->
+<div id="exp-card-wrap"></div>
+
 <!-- DASHBOARD -->
 <div id="dash">
   <div class="hdr">
@@ -460,6 +508,7 @@
         <button class="hdr-btn apply" onclick="aplicarFiltro()">Aplicar</button>
         <button class="hdr-btn refresh" onclick="atualizarDados()" id="btn-refresh" title="Atualizar dados">↻</button>
       </div>
+      <button class="hdr-btn export" onclick="abrirExport()" id="btn-export">⬇ Exportar relatório</button>
       <button class="hdr-btn change" onclick="voltarSetup()">↩ Trocar cliente</button>
     </div>
   </div>
@@ -1154,6 +1203,185 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   mkDouble('ch-int',dias,intADia,intODia,'#A855F7','rgba(56,189,248,.75)',['Ads','Orgânico'],co);
   mkLine('ch-acum',dias,fatAcum,'#C4B5FD','rgba(196,181,253,.06)',co);
 }
+
+// ── EXPORTAR RELATÓRIO ───────────────────────────────────────────────
+function abrirExport() {
+  // Preenche com a semana anterior (seg–dom)
+  const hoje = new Date();
+  const diaSem = hoje.getDay(); // 0=dom
+  const diasAteDom = diaSem === 0 ? 7 : diaSem;
+  const dom = new Date(hoje); dom.setDate(hoje.getDate() - diasAteDom);
+  const seg = new Date(dom); seg.setDate(dom.getDate() - 6);
+  const fmt = d => d.toISOString().slice(0,10);
+  // Se já tem filtro ativo no dashboard, usa ele como sugestão
+  const fDe = document.getElementById('f-de').value;
+  const fAte = document.getElementById('f-ate').value;
+  document.getElementById('exp-de').value = fDe || fmt(seg);
+  document.getElementById('exp-ate').value = fAte || fmt(dom);
+  document.getElementById('modal-export').classList.add('on');
+}
+
+function fecharExport() {
+  document.getElementById('modal-export').classList.remove('on');
+}
+
+async function gerarImagem() {
+  const de = document.getElementById('exp-de').value;
+  const ate = document.getElementById('exp-ate').value;
+  if (!de || !ate) return;
+
+  const btn = document.getElementById('btn-gerar');
+  btn.disabled = true; btn.textContent = 'Gerando...';
+
+  // Calcula dados do período
+  const ag  = filtrar(DATA.ag,  de, ate);
+  const cli = filtrar(DATA.cli, de, ate);
+  const cfg = DATA.cfg;
+
+  const mensalidade = num(cfg['investimento em assessoria mensal (r$)'] || 0);
+  const margem      = num(cfg['margem de lucro média do produto (%)']   || 0);
+  const cliente     = cfg['nome da empresa'] || 'Cliente';
+  const metaFatAn   = num(cfg['meta de faturamento anúncios (r$)']      || 0);
+  const metaFatTot  = num(cfg['meta de faturamento total (r$)']         || 0);
+
+  const dDe = new Date(de), dAte = new Date(ate);
+  const diasPeriodo = Math.round((dAte - dDe) / 86400000) + 1;
+  const fator = diasPeriodo / 30;
+
+  let totFAds=0, totFTot=0, totVAds=0, totIntAds=0, totInvAg=0, totAlc=0;
+  ag.forEach(r => {
+    totAlc   += num(r['Alcance Meta Ads']||0) + num(r['Alcance Google Ads']||0);
+    totInvAg += num(r['TOTAL INVESTIDO (DIA)']||0);
+  });
+  cli.forEach(r => {
+    totFAds   += num(r['Valor Vendido Anúncios (R$)']||0);
+    totFTot   += num(r['TOTAL FATURADO (DIA)']||0);
+    totVAds   += num(r['Vendas por Anúncios (Qtd)']||0);
+    totIntAds += num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+  });
+
+  const custo  = mensalidade * fator + totInvAg;
+  const roiP   = custo > 0 ? totFAds / custo : 0;
+  const lucroP = totFAds * (margem / 100) - custo;
+  const mFatAn = metaFatAn * fator;
+  const mFatTot= metaFatTot * fator;
+  const pctFatAn  = mFatAn  > 0 ? Math.min(totFAds / mFatAn  * 100, 100) : 0;
+  const pctFatTot = mFatTot > 0 ? Math.min(totFTot / mFatTot * 100, 100) : 0;
+
+  const fmtDate = s => { const [y,m,d] = s.split('-'); return `${d}/${m}/${y}`; };
+  const periodo = `${fmtDate(de)} — ${fmtDate(ate)}`;
+  const lucroPos = lucroP >= 0;
+
+  // Monta o card HTML
+  const card = `
+<div style="
+  width:640px;background:#0B0920;font-family:'Montserrat',sans-serif;color:#fff;
+  border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,0.25);
+  padding:0;
+">
+  <!-- Topo -->
+  <div style="background:linear-gradient(135deg,rgba(107,33,232,0.35),rgba(168,85,247,0.12));
+    padding:28px 32px 22px;border-bottom:1px solid rgba(168,85,247,0.15);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:rgba(168,85,247,0.55);margin-bottom:4px;text-transform:uppercase;">VÉRTICE ASSESSORIA</div>
+        <div style="font-size:20px;font-weight:900;">${cliente}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-top:3px;">Relatório · ${periodo}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(168,85,247,0.45);margin-bottom:4px;text-transform:uppercase;">ROI do período</div>
+        <div style="font-size:36px;font-weight:900;color:#C4B5FD;line-height:1;">${roiP.toFixed(2).replace('.',',')}x</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.30);margin-top:2px;">por R$ 1 investido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid de métricas principais -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(168,85,247,0.10);">
+    <div style="background:#0B0920;padding:20px 22px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.30);margin-bottom:6px;text-transform:uppercase;">Faturamento Anúncios</div>
+      <div style="font-size:22px;font-weight:900;color:#A855F7;">${brl(totFAds)}</div>
+      ${mFatAn>0?`<div style="margin-top:8px;"><div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${pctFatAn}%;background:linear-gradient(90deg,#6B21E8,#A855F7);border-radius:2px;"></div></div><div style="font-size:9px;color:rgba(168,85,247,0.55);margin-top:4px;">${pctFatAn.toFixed(1)}% da meta</div></div>`:''}
+    </div>
+    <div style="background:#0B0920;padding:20px 22px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.30);margin-bottom:6px;text-transform:uppercase;">Faturamento Total</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;">${brl(totFTot)}</div>
+      ${mFatTot>0?`<div style="margin-top:8px;"><div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${pctFatTot}%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:2px;"></div></div><div style="font-size:9px;color:rgba(74,222,128,0.55);margin-top:4px;">${pctFatTot.toFixed(1)}% da meta</div></div>`:''}
+    </div>
+    <div style="background:#0B0920;padding:20px 22px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.30);margin-bottom:6px;text-transform:uppercase;">Investimento Total</div>
+      <div style="font-size:22px;font-weight:900;color:#facc15;">${brl(custo)}</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.25);margin-top:6px;">Assessoria + tráfego</div>
+    </div>
+  </div>
+
+  <!-- Linha funil -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:rgba(168,85,247,0.10);">
+    <div style="background:#0F0C2A;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(196,181,253,0.35);margin-bottom:6px;text-transform:uppercase;">Alcance</div>
+      <div style="font-size:20px;font-weight:900;color:#C4B5FD;">${totAlc.toLocaleString('pt-BR')}</div>
+    </div>
+    <div style="background:#0F0C2A;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(196,181,253,0.35);margin-bottom:6px;text-transform:uppercase;">Contatos</div>
+      <div style="font-size:20px;font-weight:900;color:#C4B5FD;">${totIntAds.toLocaleString('pt-BR')}</div>
+    </div>
+    <div style="background:#0F0C2A;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(196,181,253,0.35);margin-bottom:6px;text-transform:uppercase;">Vendas Ads</div>
+      <div style="font-size:20px;font-weight:900;color:#C4B5FD;">${totVAds}</div>
+    </div>
+    <div style="background:#0F0C2A;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(196,181,253,0.35);margin-bottom:6px;text-transform:uppercase;">Conversão</div>
+      <div style="font-size:20px;font-weight:900;color:#C4B5FD;">${totIntAds>0?(totVAds/totIntAds*100).toFixed(1)+'%':'—'}</div>
+    </div>
+  </div>
+
+  <!-- Rodapé lucro -->
+  <div style="padding:20px 28px;background:${lucroPos?'rgba(74,222,128,0.05)':'rgba(248,113,113,0.05)'};
+    border-top:1px solid ${lucroPos?'rgba(74,222,128,0.15)':'rgba(248,113,113,0.15)'};
+    display:flex;align-items:center;gap:16px;">
+    <div style="font-size:28px;">${lucroPos?'✅':'⏳'}</div>
+    <div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.30);margin-bottom:3px;text-transform:uppercase;">Retorno líquido do período</div>
+      <div style="font-size:22px;font-weight:900;color:${lucroPos?'#4ade80':'#f87171'};">${lucroPos?'+':''}${brl(lucroP)}</div>
+      <div style="font-size:11px;color:${lucroPos?'rgba(74,222,128,0.55)':'rgba(248,113,113,0.55)'};margin-top:3px;">
+        ${lucroPos?'O projeto se pagou e gerou retorno líquido neste período.':'Faltam '+brl(Math.abs(lucroP))+' para o projeto se pagar.'}
+      </div>
+    </div>
+  </div>
+
+  <!-- Assinatura -->
+  <div style="padding:12px 28px;background:rgba(0,0,0,0.20);text-align:center;">
+    <span style="font-size:9px;font-weight:700;letter-spacing:3px;color:rgba(168,85,247,0.35);">VÉRTICE <span style="color:rgba(168,85,247,0.55);">ASSESSORIA</span></span>
+  </div>
+</div>`;
+
+  const wrap = document.getElementById('exp-card-wrap');
+  wrap.innerHTML = card;
+
+  // Aguarda fontes e renderiza
+  await document.fonts.ready;
+  await new Promise(r => setTimeout(r, 200));
+
+  try {
+    const canvas = await html2canvas(wrap.firstElementChild, {
+      scale: 2,
+      backgroundColor: '#0B0920',
+      useCORS: true,
+      logging: false
+    });
+    const link = document.createElement('a');
+    link.download = `relatorio-${cliente.replace(/\s+/g,'-').toLowerCase()}-${de}-${ate}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Erro ao gerar imagem. Tente novamente.');
+  }
+
+  wrap.innerHTML = '';
+  btn.disabled = false; btn.textContent = 'Gerar imagem →';
+  fecharExport();
+}
+// ── FIM EXPORTAR ─────────────────────────────────────────────────────
 
 function mkLine(id,labels,data,color,fill,opts){ if(CHARTS[id]) CHARTS[id].destroy(); CHARTS[id]=new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:[{data,borderColor:color,backgroundColor:fill,fill:true,tension:.4,pointRadius:0,borderWidth:2}]},options:{...opts,maintainAspectRatio:false}}); }
 function mkBar(id,labels,data,color,opts){ if(CHARTS[id]) CHARTS[id].destroy(); CHARTS[id]=new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{data,backgroundColor:color,borderRadius:3,borderSkipped:false}]},options:{...opts,maintainAspectRatio:false}}); }
