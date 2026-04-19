@@ -708,8 +708,8 @@ async function atualizarDados() {
   const ate=document.getElementById('f-ate').value;
   try {
     const [r0,r1,r2,r3]=await Promise.all([
-      fetchAba(SHEET_ID,348998040),fetchAba(SHEET_ID,192450305),
-      fetchAba(SHEET_ID,1142429845),fetchAba(SHEET_ID,1883163999)
+      fetchAba(SHEET_ID,17505509),fetchAba(SHEET_ID,1912410320),
+      fetchAba(SHEET_ID,1546653935),fetchAba(SHEET_ID,1980013568)
     ]);
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     renderDash(DATA.cfg,filtrar(DATA.ag,de,ate),filtrar(DATA.cli,de,ate),de,ate,DATA.dash);
@@ -728,13 +728,13 @@ async function carregarDados(de,ate) {
   document.getElementById('loader').classList.remove('hidden');
   try {
     setLoader(15,'CARREGANDO CONFIGURAÇÕES');
-    const r0=await fetchAba(SHEET_ID,348998040);
+    const r0=await fetchAba(SHEET_ID,17505509);
     setLoader(40,'CARREGANDO DADOS DA AGÊNCIA');
-    const r1=await fetchAba(SHEET_ID,192450305);
+    const r1=await fetchAba(SHEET_ID,1912410320);
     setLoader(65,'CARREGANDO DADOS DO CLIENTE');
-    const r2=await fetchAba(SHEET_ID,1142429845);
+    const r2=await fetchAba(SHEET_ID,1546653935);
     setLoader(88,'CALCULANDO');
-    const r3=await fetchAba(SHEET_ID,1883163999);
+    const r3=await fetchAba(SHEET_ID,1980013568);
     setLoader(100,'PRONTO');
     DATA.cfg=parseCfg(r0); DATA.ag=parseRows(r1); DATA.cli=parseRows(r2); DATA.dash=parseRows(r3);
     await new Promise(r=>setTimeout(r,280));
@@ -777,7 +777,7 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
 
   const rFatTot=findDash('faturamento total da loja');
   const rFatAn=findDash('faturamento via anúncios');
-  const rInv=findDash('investimento (tráfego');
+  const rInv=findDash('investimento (tráfego')||findDash('investimento (');
 
   const pmFatTot=rFatTot?num(vals(rFatTot)[1]):0;
   const pmMetaTot=rFatTot?num(vals(rFatTot)[3]):metaFatTot;
@@ -828,9 +828,12 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   const diasMes=dDe?new Date(dDe.getFullYear(),dDe.getMonth()+1,0).getDate():30;
   const fator=Math.min(diasPeriodo/diasMes,1);
 
-  // Totais agência
+  // Totais agência — nova planilha: alcance = Meta Ads + Google Ads; investimento = TOTAL INVESTIDO (já inclui imposto Meta + outros)
   let totAlc=0,totInvAg=0;
-  ag.forEach(r=>{ totAlc+=num(r['Pessoas Alcançadas (Alcance)']||0); totInvAg+=num(r['Valor Investido em Anúncios (R$)']||0); });
+  ag.forEach(r=>{
+    totAlc+=num(r['Alcance Meta Ads']||0)+num(r['Alcance Google Ads']||0);
+    totInvAg+=num(r['TOTAL INVESTIDO (DIA)']||0);
+  });
 
   // Totais cliente
   let totIntAds=0,totIntOrg=0,totVAds=0,totFAds=0,totVOrg=0,totFOrg=0,totVTot=0,totFTot=0;
@@ -845,7 +848,10 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
     totFTot+=num(r['TOTAL FATURADO (DIA)']||0);
   });
 
-  const custo=mensalidade*fator+totInvAg;
+  // custo = mensalidade proporcional + investimento em ads (já inclui imposto Meta e outros)
+  const custoAds=totInvAg;
+  const custoAssessoria=mensalidade*fator;
+  const custo=custoAssessoria+custoAds;
   const lucroB=totFAds*(margem/100);
   const lucroP=lucroB-custo;
   const roiP=custo>0?totFAds/custo:0;
@@ -858,7 +864,7 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   set('p-fat-tot',brl(totFTot));
   set('p-fat-an',brl(totFAds));
   set('p-custo',brl(custo));
-  set('p-custo-hint','Mensalidade ('+fmtPct(fator)+') + Tráfego do período');
+  set('p-custo-hint','Assessoria '+brl(custoAssessoria)+' + Ads c/ imposto '+brl(custoAds));
   const roiPEl=document.getElementById('p-roi');
   roiPEl.textContent=roiP.toFixed(2).replace('.',',')+'x';
   roiPEl.className='pb-val '+(roiP>=1?'gr':'re');
@@ -965,7 +971,7 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   const semKey=d=>{ const f=new Date(d.getFullYear(),d.getMonth(),1); return Math.ceil((d.getDate()+f.getDay())/7); };
   const semLabel=d=>{ const y=d.getFullYear(),mo=d.getMonth(),f=new Date(y,mo,1),l=new Date(y,mo+1,0),n=semKey(d); const ini=new Date(y,mo,Math.max(1,(n-1)*7-f.getDay()+1)),fim=new Date(y,mo,Math.min(l.getDate(),(n)*7-f.getDay())); return `Sem ${n} (${ini.getDate().toString().padStart(2,'0')}/${(ini.getMonth()+1).toString().padStart(2,'0')}–${fim.getDate().toString().padStart(2,'0')}/${(fim.getMonth()+1).toString().padStart(2,'0')})`; };
   cli.forEach(r=>{ const d=parseDate(r['Data']||r['data']||''); if(!d) return; const k=semKey(d); if(!semanas[k]) semanas[k]={label:semLabel(d),alc:0,intA:0,intO:0,vA:0,fA:0,vO:0,fO:0,vT:0,fT:0,inv:0}; semanas[k].intA+=num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0); semanas[k].intO+=num(r['Interessados ORGÂNICOS (Sem Anúncio)']||0); semanas[k].vA+=num(r['Vendas por Anúncios (Qtd)']||0); semanas[k].fA+=num(r['Valor Vendido Anúncios (R$)']||0); semanas[k].vO+=num(r['Vendas Orgânicas (Qtd)']||0); semanas[k].fO+=num(r['Valor Vendido Orgânico (R$)']||0); semanas[k].vT+=num(r['TOTAL DE VENDAS (DIA)']||0); semanas[k].fT+=num(r['TOTAL FATURADO (DIA)']||0); });
-  ag.forEach(r=>{ const d=parseDate(r['Data']||r['data']||''); if(!d) return; const k=semKey(d); if(semanas[k]){ semanas[k].alc+=num(r['Pessoas Alcançadas (Alcance)']||0); semanas[k].inv+=num(r['Valor Investido em Anúncios (R$)']||0); } });
+  ag.forEach(r=>{ const d=parseDate(r['Data']||r['data']||''); if(!d) return; const k=semKey(d); if(semanas[k]){ semanas[k].alc+=num(r['Alcance Meta Ads']||0)+num(r['Alcance Google Ads']||0); semanas[k].inv+=num(r['TOTAL INVESTIDO (DIA)']||0); } });
   const sl=Object.values(semanas);
   document.getElementById('t-body').innerHTML=sl.map(s=>`<tr><td>${s.label}</td><td class="num">${s.alc.toLocaleString('pt-BR')}</td><td class="num">${s.intA}</td><td class="num">${s.intO}</td><td class="num">${s.vA}</td><td class="num">${s.vO}</td><td class="num gr">${brl(s.fA)}</td><td class="num">${brl(s.fO)}</td><td class="num">${brl(s.fT)}</td><td class="num re">${brl(s.inv)}</td></tr>`).join('')+`<tr><td>Total do Período</td><td class="num">${totAlc.toLocaleString('pt-BR')}</td><td class="num">${totIntAds}</td><td class="num">${totIntOrg}</td><td class="num">${totVAds}</td><td class="num">${totVOrg}</td><td class="num gr">${brl(totFAds)}</td><td class="num">${brl(totFOrg)}</td><td class="num">${brl(totFTot)}</td><td class="num re">${brl(totInvAg)}</td></tr>`;
 
