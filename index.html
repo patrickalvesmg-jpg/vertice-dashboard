@@ -407,14 +407,14 @@
         <div class="c-sub">Faturamento anúncios − Investimento</div>
       </div>
       <div class="card">
-        <div class="c-lbl">Ticket Médio Estimado</div>
+        <div class="c-lbl">Ticket Médio Real</div>
         <div class="c-val sm ye" id="pm-ticket">—</div>
-        <div class="c-sub">Configurado na planilha</div>
+        <div class="c-sub">Faturamento anúncios ÷ Vendas do mês</div>
       </div>
       <div class="card">
-        <div class="c-lbl">Taxa de Conversão Estimada</div>
+        <div class="c-lbl">Taxa de Conversão Real</div>
         <div class="c-val sm bl" id="pm-conv">—</div>
-        <div class="c-sub">Interessados → Vendas</div>
+        <div class="c-sub">Interessados → Vendas do mês</div>
       </div>
     </div>
 
@@ -814,8 +814,17 @@ function renderDash(cfg,ag,cli,de,ate,DR) {
   set('pm-inv',brl(pmInv));
   document.getElementById('pm-lucro').className='c-val sm '+(pmLucro>=0?'gr':'re');
   set('pm-lucro',brl(pmLucro));
-  set('pm-ticket',brl(ticketEst));
-  set('pm-conv',convEst.toFixed(1)+'%');
+  // Ticket e conversão reais do mês completo (DATA.cli = sem filtro de período)
+  let pmVAdsTotal=0,pmFAdsTotal=0,pmIntAdsTotal=0;
+  (DATA.cli||[]).forEach(r=>{
+    pmVAdsTotal+=num(r['Vendas por Anúncios (Qtd)']||0);
+    pmFAdsTotal+=num(r['Valor Vendido Anúncios (R$)']||0);
+    pmIntAdsTotal+=num(r['Interessados VIA ANÚNCIOS (Zap + Loja)']||0);
+  });
+  const ticketReal=pmVAdsTotal>0?pmFAdsTotal/pmVAdsTotal:0;
+  const convReal=pmIntAdsTotal>0?pmVAdsTotal/pmIntAdsTotal*100:0;
+  set('pm-ticket',brl(ticketReal));
+  set('pm-conv',convReal.toFixed(1)+'%');
 
   // Período
   const dDe=de?new Date(de):(ag.length?parseDate(ag[0]['Data']||ag[0]['data']):null);
