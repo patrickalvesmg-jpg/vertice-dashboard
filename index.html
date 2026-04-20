@@ -1523,6 +1523,20 @@ async function gerarImagem() {
     </div>
   </div>
 
+  <!-- Linha custo por lead / custo por venda -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(168,85,247,0.10);">
+    <div style="background:#0D0B24;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(250,204,21,0.40);margin-bottom:6px;text-transform:uppercase;">Custo por Lead</div>
+      <div style="font-size:20px;font-weight:900;color:#facc15;">${totIntAds>0?brl(totInvAg/totIntAds):'—'}</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.20);margin-top:4px;">Investimento Ads ÷ Contatos</div>
+    </div>
+    <div style="background:#0D0B24;padding:16px 18px;text-align:center;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:rgba(250,204,21,0.40);margin-bottom:6px;text-transform:uppercase;">Custo por Venda</div>
+      <div style="font-size:20px;font-weight:900;color:#facc15;">${totVAds>0?brl(totInvAg/totVAds):'—'}</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.20);margin-top:4px;">Investimento Ads ÷ Vendas</div>
+    </div>
+  </div>
+
   <!-- Rodapé lucro -->
   <div style="padding:20px 28px;background:${lucroPos?'rgba(74,222,128,0.05)':'rgba(248,113,113,0.05)'};
     border-top:1px solid ${lucroPos?'rgba(74,222,128,0.15)':'rgba(248,113,113,0.15)'};
